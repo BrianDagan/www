@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BrianDagan.com</title>
+	<style>
+		body {
+			background-color: rgb(42, 42, 42);
+			margin: 0;
+			padding: 0;
+		}
+
+		#logo {
+			display: block;
+			margin: auto;
+			margin-top: 50px;
+			width: 250px;
+			height: 250px;
+			border: 8px solid white;
+            border-radius: 50%;
+			mask-image: url('logo.png');
+			mask-size: contain;
+			mask-position: center;
+			mask-repeat: no-repeat;
+			background-color: transparent;
+		}
+
+		.social-icons {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-top: 50px;
+		}
+
+		.social-icons a {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 48px;
+			height: 48px;
+			margin: 0 5px;
+		}
+
+		.social-icons a:hover {
+			transform: scale(1.2);
+		}
+	</style>
+</head>
+<body>
+	<img id="logo" src="logo.png" alt="Logo">
+
+	<div class="social-icons">
+		<a href="https://www.linkedin.com/in/briandagan"><img src="linkedIn.png" alt="LinkedIn"></a>
+		<a href="https://www.twitter.com/briandagan"><img src="twitter.png" alt="Twitter"></a>
+		<a href="https://www.github.com/briandagan"><img src="gitHub.png" alt="GitHub"></a>
+		<a href="mailto:contact[at]briandagan[dot]com"><img src="mail.png" alt="E-Mail"></a>
+	</div>
+</body>
+</html>

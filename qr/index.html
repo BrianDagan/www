@@ -233,19 +233,44 @@
 
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-    var player;
-    var clicked = false;
+    var player, playerReady = false, clicked = false;
 
     // Timing (ms)
-    var CURTAIN_FADE = 800;   // curtains fade fully in
-    var PLAY_DELAY   = 500;   // after curtains in, before video plays
-    var OPEN_DELAY   = 750;   // after video plays, before curtains part
+    var REVEAL_AT = 800;    // place the hidden video behind the now-closed curtains
+    var OPEN_AT   = 2050;   // begin parting the curtains (slow 5s open)
 
-    function onYouTubeIframeAPIReady() { /* API ready; player created on click */ }
+    // Pre-create the player on load so playback can begin *synchronously* inside the
+    // tap handler — required for audio on mobile browsers (iOS Safari/Chrome only
+    // permit unmuted playback that starts as a direct result of a user gesture).
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '100%',
+        width: '100%',
+        videoId: 'dQw4w9WgXcQ',
+        playerVars: {
+          'autoplay': 0,
+          'controls': 1,
+          'rel': 0,
+          'modestbranding': 1,
+          'fs': 1,
+          'playsinline': 1
+        },
+        events: {
+          'onReady': function () { playerReady = true; }
+        }
+      });
+    }
 
     document.getElementById('goBtn').addEventListener('click', function () {
       if (clicked) return;
       clicked = true;
+
+      // Start playback NOW, within the user gesture, so sound is allowed on every
+      // browser (desktop and mobile). The video stays invisible behind the curtains.
+      if (player) {
+        try { player.unMute(); } catch (e) {}
+        try { player.playVideo(); } catch (e) {}
+      }
 
       // Button simply fades out.
       document.getElementById('startScreen').classList.add('gone');
@@ -258,39 +283,19 @@
         document.getElementById('favicon').href = 'data:image/svg+xml,' + encodeURIComponent(svg);
       }, 500);
 
-      // Curtains fade in over the grayscale backdrop.
+      // Curtains fade in over the rainbow backdrop.
       document.getElementById('curtains').classList.add('visible');
 
-      // Start loading the video in the background (created within the user gesture).
-      player = new YT.Player('player', {
-        height: '100%',
-        width: '100%',
-        videoId: 'dQw4w9WgXcQ',
-        playerVars: {
-          'autoplay': 0,
-          'controls': 1,
-          'rel': 0,
-          'modestbranding': 1,
-          'fs': 1,
-          'playsinline': 1
-        }
-      });
-
-      // Once curtains are fully faded in, place the (still hidden) video behind them.
+      // Once the curtains cover the screen, reveal the (until now hidden) video behind them.
       setTimeout(function () {
         document.getElementById('videoContainer').classList.add('visible');
-      }, CURTAIN_FADE);
+      }, REVEAL_AT);
 
-      // 0.5s after the curtains are fully faded in, start the video playing.
-      setTimeout(function () {
-        if (player && player.playVideo) player.playVideo();
-      }, CURTAIN_FADE + PLAY_DELAY);
-
-      // 0.75s after the video starts, part the curtains over 5 seconds.
+      // Part the curtains slowly (5s) once the player's startup overlay has auto-hidden.
       setTimeout(function () {
         document.getElementById('curtains').classList.add('open');
         document.getElementById('blockOverlay').classList.add('active');
-      }, CURTAIN_FADE + PLAY_DELAY + OPEN_DELAY);
+      }, OPEN_AT);
     });
   </script>
 </body>

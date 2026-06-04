@@ -150,36 +150,63 @@
       border-radius: 50%;
       cursor: pointer;
       outline: none;
-      /* Metallic bezel / housing ring */
+      /* Brushed-metal arcade housing with a layered mounting collar */
       background:
-        radial-gradient(circle at 50% 32%, #6f6f75 0%, #45454a 52%, #232327 100%);
+        conic-gradient(from 90deg,
+          #2a2a2e, #74747c, #38383d, #82828a, #2c2c30,
+          #74747c, #38383d, #82828a, #2a2a2e);
       box-shadow:
-        0 12px 26px rgba(0,0,0,0.55),
-        inset 0 2px 3px rgba(255,255,255,0.28),
-        inset 0 -5px 10px rgba(0,0,0,0.65);
+        0 0 0 6px #141416,
+        0 0 0 9px #2c2c31,
+        0 16px 32px rgba(0,0,0,0.6),
+        inset 0 3px 4px rgba(255,255,255,0.4),
+        inset 0 -7px 14px rgba(0,0,0,0.75);
       transition: filter 0.2s ease;
     }
-    /* The convex, glossy button cap seated inside the bezel */
+    /* The convex, glossy plunger cap, seated in the bezel with a dark gap ring.
+       Bottom inset is larger than top so the cap (plus its side wall) reads as
+       optically centered within the housing. */
     .arcade-btn::before {
       content: '';
       position: absolute;
-      inset: clamp(15px, 4vw, 24px);
+      inset: clamp(13px, 3.4vw, 22px) clamp(17px, 4.2vw, 26px) clamp(21px, 5vw, 30px);
       border-radius: 50%;
       background:
-        radial-gradient(circle at 50% 28%, #ff8f8f 0%, #f53b3b 40%, #cf1d1d 72%, #9c1313 100%);
+        radial-gradient(circle at 50% 30%, #ff9a9a 0%, #f24a4a 38%, #d11f1f 70%, #8f1010 100%);
       box-shadow:
-        inset 0 12px 22px rgba(255,255,255,0.45),
-        inset 0 -14px 24px rgba(0,0,0,0.45),
-        0 7px 0 #7c1010;
+        0 0 0 4px rgba(0,0,0,0.6),
+        inset 0 14px 26px rgba(255,255,255,0.5),
+        inset 0 -16px 26px rgba(0,0,0,0.5),
+        0 8px 0 #7c1010;
       transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    /* Specular highlight blob for a glossy, molded-plastic arcade look */
+    .arcade-btn::after {
+      content: '';
+      position: absolute;
+      top: clamp(26px, 7vw, 44px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 46%;
+      height: 26%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center,
+        rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+      filter: blur(2px);
+      pointer-events: none;
+      transition: transform 0.1s ease;
     }
     .arcade-btn:hover { filter: brightness(1.07); }
     .arcade-btn:active::before {
       transform: translateY(6px);
       box-shadow:
-        inset 0 10px 20px rgba(255,255,255,0.3),
-        inset 0 -10px 20px rgba(0,0,0,0.5),
-        0 1px 0 #7c1010;
+        0 0 0 4px rgba(0,0,0,0.6),
+        inset 0 12px 22px rgba(255,255,255,0.35),
+        inset 0 -12px 22px rgba(0,0,0,0.55),
+        0 2px 0 #7c1010;
+    }
+    .arcade-btn:active::after {
+      transform: translateX(-50%) translateY(6px);
     }
   </style>
 </head>

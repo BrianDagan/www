@@ -32,6 +32,18 @@
       width: 100%;
       height: 100%;
     }
+    /* Diabolical: an invisible layer that swallows every click and hover,
+       so the revealed video can't be paused and its controls never appear. */
+    .block-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: transparent;
+      pointer-events: none;
+    }
+    .block-overlay.active {
+      pointer-events: auto;
+    }
 
     /* ---------- Theater curtains ---------- */
     .curtains {
@@ -116,24 +128,6 @@
       opacity: 0;
       pointer-events: none;
     }
-    .tagline {
-      color: #ffe9a8;
-      font-size: clamp(1.2rem, 4vw, 2rem);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.7), 0 0 22px rgba(217,164,65,0.5);
-      animation: bob 2.4s ease-in-out infinite;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      text-align: center;
-    }
-    .tagline.fade-out {
-      opacity: 0;
-      transform: translateY(-12px);
-    }
-    @keyframes bob {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
 
     /* ---------- Arcade button + mounting ---------- */
     .button-rig {
@@ -193,7 +187,6 @@
       box-shadow:
         0 20px 0 #6e0d0d,
         0 20px 0 3px #560a0a,
-        0 34px 38px rgba(0,0,0,0.6),
         inset 0 -10px 22px rgba(0,0,0,0.4),
         inset 0 14px 28px rgba(255,255,255,0.4);
       transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.2s ease;
@@ -216,13 +209,14 @@
       box-shadow:
         0 2px 0 #6e0d0d,
         0 2px 0 3px #560a0a,
-        0 8px 14px rgba(0,0,0,0.5),
         inset 0 -5px 16px rgba(0,0,0,0.45),
         inset 0 10px 24px rgba(255,255,255,0.25);
     }
     /* Button breaks loose from its mounting and falls out of frame */
     .arcade-btn.falling {
-      box-shadow: 0 30px 50px rgba(0,0,0,0.55);
+      box-shadow:
+        0 20px 0 #6e0d0d,
+        0 20px 0 3px #560a0a;
       animation: breakLoose 0.95s cubic-bezier(0.45, 0.05, 0.95, 0.9) forwards;
     }
     @keyframes breakLoose {
@@ -236,6 +230,7 @@
   <!-- Video sits behind the curtains and is already playing when revealed -->
   <div class="video-container" id="videoContainer">
     <div id="player"></div>
+    <div class="block-overlay" id="blockOverlay"></div>
   </div>
 
   <!-- Closed theater curtains -->
@@ -247,7 +242,6 @@
 
   <!-- The enticement: giant red arcade button -->
   <div class="start-screen" id="startScreen">
-    <p class="tagline" id="tagline">Push to claim your prize</p>
     <div class="button-rig">
       <div class="mount" id="mount">
         <span class="bolt tl"></span>
@@ -273,6 +267,7 @@
       opened = true;
       document.getElementById('curtains').classList.add('open');
       document.getElementById('startScreen').classList.add('gone');
+      document.getElementById('blockOverlay').classList.add('active');
     }
 
     function maybeOpen() {
@@ -290,7 +285,6 @@
 
       var btn = this;
       btn.classList.add('pressed');
-      document.getElementById('tagline').classList.add('fade-out');
 
       // After it depresses, the button breaks loose and falls away.
       setTimeout(function () {

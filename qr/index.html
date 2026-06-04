@@ -14,195 +14,283 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .centered {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      animation: fadeIn 1s ease-in;
-      padding: 20px;
-      text-align: center;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    h1 {
-      color: #fff;
+      background: #0a0505;
       font-family: 'Arial', sans-serif;
-      font-size: clamp(2rem, 8vw, 3.5rem);
-      margin-bottom: 1rem;
-      text-shadow: 0 0 20px rgba(255,255,255,0.5);
-      animation: glow 2s ease-in-out infinite alternate;
-      width: 100%;
     }
-    @keyframes glow {
-      from { text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.3); }
-      to { text-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.5); }
-    }
-    .subtitle {
-      color: rgba(255,255,255,0.9);
-      font-family: 'Arial', sans-serif;
-      font-size: clamp(1rem, 3vw, 1.2rem);
-      margin-bottom: 2rem;
-      width: 100%;
-      max-width: 600px;
-    }
-    .button-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-    .go-btn {
-      font-size: clamp(1.5rem, 5vw, 3rem);
-      padding: clamp(0.8rem, 2vw, 1.5rem) clamp(2rem, 6vw, 4rem);
-      border: none;
-      border-radius: 2rem;
-      background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
-      color: #fff;
-      cursor: pointer;
-      box-shadow: 0 8px 32px rgba(245, 87, 108, 0.4);
-      transition: all 0.3s ease;
-      font-weight: bold;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      position: relative;
-      overflow: hidden;
-      animation: pulse 2s ease-in-out infinite;
-      display: inline-block;
-      white-space: nowrap;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    .go-btn::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.3);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-    .go-btn:hover::before {
-      width: 300px;
-      height: 300px;
-    }
-    .go-btn:hover {
-      background: linear-gradient(90deg, #f5576c 0%, #f093fb 100%);
-      transform: scale(1.1);
-      box-shadow: 0 12px 48px rgba(245, 87, 108, 0.6);
-      animation: none;
-    }
-    .go-btn:active {
-      transform: scale(0.95);
-    }
-    .go-btn .btn-text {
-      position: relative;
-      z-index: 1;
-    }
-    .sparkle {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      top: 0;
-      left: 0;
-    }
-    .sparkle::before,
-    .sparkle::after {
-      content: '✨';
-      position: absolute;
-      font-size: clamp(1.5rem, 4vw, 2rem);
-      animation: sparkleFloat 3s ease-in-out infinite;
-      opacity: 0.7;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-    .sparkle::before {
-      left: -50px;
-      animation-delay: 0s;
-    }
-    .sparkle::after {
-      right: -50px;
-      animation-delay: 1.5s;
-    }
-    @keyframes sparkleFloat {
-      0%, 100% { transform: translateY(-50%) translateY(0px); }
-      50% { transform: translateY(-50%) translateY(-20px); }
-    }
-    .hidden {
-      display: none !important;
-    }
+
+    /* ---------- Stage layers ---------- */
     .video-container {
-      width: 100%;
-      height: 100%;
+      position: fixed;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #000;
-      position: fixed;
-      top: 0;
-      left: 0;
+      z-index: 1;
     }
     #player {
       width: 100%;
       height: 100%;
     }
-    
-    @media (max-width: 768px) {
-      .sparkle::before,
-      .sparkle::after {
-        font-size: 1.5rem;
-      }
-      .sparkle::before {
-        left: -40px;
-      }
-      .sparkle::after {
-        right: -40px;
-      }
+
+    /* ---------- Theater curtains ---------- */
+    .curtains {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .valance {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      background:
+        repeating-linear-gradient(90deg,
+          #5a0c0c 0px, #7e1414 26px, #9c1d1d 52px, #7e1414 78px, #5a0c0c 104px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      border-bottom: 4px solid #d9a441;
+      z-index: 3;
+    }
+    .valance::after {
+      content: '';
+      position: absolute;
+      bottom: -22px;
+      left: 0;
+      width: 100%;
+      height: 22px;
+      background:
+        radial-gradient(circle at 20px -2px, #7e1414 16px, transparent 17px) repeat-x;
+      background-size: 40px 22px;
+    }
+    .curtain {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 52%;
+      background:
+        repeating-linear-gradient(90deg,
+          #4d0a0a 0px,
+          #6e1010 22px,
+          #9a1d1d 44px,
+          #b32525 60px,
+          #9a1d1d 76px,
+          #6e1010 98px,
+          #4d0a0a 120px);
+      box-shadow: inset 0 0 120px rgba(0,0,0,0.7);
+      transition: transform 1.7s cubic-bezier(0.7, 0, 0.25, 1);
+      will-change: transform;
+    }
+    .curtain::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+        rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 30%,
+        rgba(0,0,0,0) 70%, rgba(0,0,0,0.45) 100%);
+    }
+    .curtain-left  { left: 0;  transform-origin: left center; }
+    .curtain-right { right: 0; transform-origin: right center; }
+    .curtains.open .curtain-left  { transform: translateX(-102%); }
+    .curtains.open .curtain-right { transform: translateX(102%); }
+
+    /* ---------- Start screen ---------- */
+    .start-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(1.5rem, 6vw, 3.5rem);
+      padding: 20px;
+      transition: opacity 0.9s ease;
+    }
+    .start-screen.gone {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .tagline {
+      color: #ffe9a8;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.7), 0 0 22px rgba(217,164,65,0.5);
+      animation: bob 2.4s ease-in-out infinite;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      text-align: center;
+    }
+    .tagline.fade-out {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ---------- Arcade button + mounting ---------- */
+    .button-rig {
+      position: relative;
+      width: clamp(170px, 42vw, 280px);
+      height: clamp(170px, 42vw, 280px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* The mounting plate the button is bolted to */
+    .mount {
+      position: absolute;
+      width: 86%;
+      height: 86%;
+      border-radius: 26%;
+      background:
+        radial-gradient(circle at 50% 40%, #2c2c30 0%, #161618 70%, #0c0c0d 100%);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.6), inset 0 3px 8px rgba(255,255,255,0.08);
+      transition: opacity 0.6s ease;
+    }
+    .mount::before {
+      /* dark socket where the button sits */
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 76%; height: 76%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, #000 40%, #1a1a1c 100%);
+      box-shadow: inset 0 6px 14px rgba(0,0,0,0.9);
+    }
+    .bolt {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #9a9aa2, #3a3a40 70%, #1c1c20);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.4);
+    }
+    .bolt.tl { top: 9%;  left: 9%; }
+    .bolt.tr { top: 9%;  right: 9%; }
+    .bolt.bl { bottom: 9%; left: 9%; }
+    .bolt.br { bottom: 9%; right: 9%; }
+
+    .arcade-btn {
+      position: relative;
+      width: 78%;
+      height: 78%;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      outline: none;
+      background:
+        radial-gradient(circle at 50% 30%,
+          #ff8a8a 0%, #f53b3b 42%, #d11d1d 70%, #9c1313 100%);
+      box-shadow:
+        0 20px 0 #6e0d0d,
+        0 20px 0 3px #560a0a,
+        0 34px 38px rgba(0,0,0,0.6),
+        inset 0 -10px 22px rgba(0,0,0,0.4),
+        inset 0 14px 28px rgba(255,255,255,0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.2s ease;
+    }
+    .arcade-btn .label {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(255,255,255,0.92);
+      font-weight: 800;
+      font-size: clamp(1.1rem, 3.4vw, 1.9rem);
+      letter-spacing: 0.18em;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      pointer-events: none;
+      user-select: none;
+    }
+    .arcade-btn:hover { filter: brightness(1.08); }
+    .arcade-btn.pressed {
+      transform: translateY(20px);
+      box-shadow:
+        0 2px 0 #6e0d0d,
+        0 2px 0 3px #560a0a,
+        0 8px 14px rgba(0,0,0,0.5),
+        inset 0 -5px 16px rgba(0,0,0,0.45),
+        inset 0 10px 24px rgba(255,255,255,0.25);
+    }
+    /* Button breaks loose from its mounting and falls out of frame */
+    .arcade-btn.falling {
+      box-shadow: 0 30px 50px rgba(0,0,0,0.55);
+      animation: breakLoose 0.95s cubic-bezier(0.45, 0.05, 0.95, 0.9) forwards;
+    }
+    @keyframes breakLoose {
+      0%   { transform: translateY(20px) rotate(0deg); }
+      12%  { transform: translateY(4px) rotate(-4deg); }
+      100% { transform: translateY(140vh) rotate(32deg); }
     }
   </style>
 </head>
 <body>
-  <div class="centered" id="startScreen">
-    <h1>🎉 Congratulations! 🎉</h1>
-    <p class="subtitle">You've won an exclusive prize!<br>Click below to claim it now!</p>
-    <div class="button-wrapper">
-      <span class="sparkle"></span>
-      <button class="go-btn" id="goBtn">
-        <span class="btn-text">Claim Prize!</span>
+  <!-- Video sits behind the curtains and is already playing when revealed -->
+  <div class="video-container" id="videoContainer">
+    <div id="player"></div>
+  </div>
+
+  <!-- Closed theater curtains -->
+  <div class="curtains" id="curtains">
+    <div class="valance"></div>
+    <div class="curtain curtain-left"></div>
+    <div class="curtain curtain-right"></div>
+  </div>
+
+  <!-- The enticement: giant red arcade button -->
+  <div class="start-screen" id="startScreen">
+    <p class="tagline" id="tagline">Push to claim your prize</p>
+    <div class="button-rig">
+      <div class="mount" id="mount">
+        <span class="bolt tl"></span>
+        <span class="bolt tr"></span>
+        <span class="bolt bl"></span>
+        <span class="bolt br"></span>
+      </div>
+      <button class="arcade-btn" id="goBtn" aria-label="Claim prize">
+        <span class="label">PUSH</span>
       </button>
     </div>
   </div>
-  <div class="video-container hidden" id="videoContainer">
-    <div id="player"></div>
-  </div>
-  
+
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     var player;
-    function onYouTubeIframeAPIReady() {
-      // API is ready but we don't create player yet
+    var clicked = false, videoPlaying = false, buttonDropped = false, opened = false;
+
+    function onYouTubeIframeAPIReady() { /* API ready; player created on click */ }
+
+    function openCurtains() {
+      if (opened) return;
+      opened = true;
+      document.getElementById('curtains').classList.add('open');
+      document.getElementById('startScreen').classList.add('gone');
     }
-    
-    document.getElementById('goBtn').addEventListener('click', function() {
-      document.getElementById('startScreen').classList.add('hidden');
-      document.getElementById('videoContainer').classList.remove('hidden');
-      
-      // Create player after user interaction
+
+    function maybeOpen() {
+      if (buttonDropped && videoPlaying) openCurtains();
+    }
+
+    document.getElementById('goBtn').addEventListener('click', function () {
+      if (clicked) return;
+      clicked = true;
+
+      var btn = this;
+      btn.classList.add('pressed');
+      document.getElementById('tagline').classList.add('fade-out');
+
+      // After it depresses, the button breaks loose and falls away.
+      setTimeout(function () {
+        btn.classList.remove('pressed');
+        btn.classList.add('falling');
+        document.getElementById('mount').style.opacity = '0';
+      }, 240);
+
+      // Build the player immediately so it's playing behind the curtains.
       player = new YT.Player('player', {
         height: '100%',
         width: '100%',
@@ -212,17 +300,26 @@
           'controls': 1,
           'rel': 0,
           'modestbranding': 1,
-          'fs': 1
+          'fs': 1,
+          'playsinline': 1
         },
         events: {
-          'onReady': onPlayerReady
+          'onReady': function (e) { e.target.playVideo(); },
+          'onStateChange': function (e) {
+            if (e.data === YT.PlayerState.PLAYING) {
+              videoPlaying = true;
+              maybeOpen();
+            }
+          }
         }
       });
+
+      // Mark the button as dropped once it has cleared the frame.
+      setTimeout(function () { buttonDropped = true; maybeOpen(); }, 1150);
+
+      // Fallback: open the curtains even if the PLAYING event is delayed.
+      setTimeout(function () { openCurtains(); }, 3500);
     });
-    
-    function onPlayerReady(event) {
-      event.target.playVideo();
-    }
   </script>
 </body>
 </html>

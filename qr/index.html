@@ -14,8 +14,16 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #0a0505;
-      font-family: 'Arial', sans-serif;
+    }
+    /* Soothing dark-mode grayscale backdrop with a slow, gentle drift */
+    body {
+      background: linear-gradient(135deg, #1d1d1f 0%, #2c2c2f 25%, #3a3a3d 50%, #2c2c2f 75%, #1a1a1c 100%);
+      background-size: 300% 300%;
+      animation: drift 22s ease-in-out infinite;
+    }
+    @keyframes drift {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
     }
 
     /* ---------- Stage layers ---------- */
@@ -27,7 +35,9 @@
       justify-content: center;
       background: #000;
       z-index: 1;
+      opacity: 0;
     }
+    .video-container.visible { opacity: 1; }
     #player {
       width: 100%;
       height: 100%;
@@ -45,13 +55,17 @@
       pointer-events: auto;
     }
 
-    /* ---------- Theater curtains ---------- */
+    /* ---------- Theater curtains (fade in, then part) ---------- */
     .curtains {
       position: fixed;
       inset: 0;
       z-index: 2;
       pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
     }
+    .curtains.visible { opacity: 1; }
+
     .valance {
       position: absolute;
       top: 0;
@@ -65,8 +79,8 @@
       border-bottom: 4px solid #d9a441;
       z-index: 3;
       will-change: transform;
-      /* Starts after the side curtains, finishes at the same moment (2s + 2.75s = 4.75s) */
-      transition: transform 2.75s cubic-bezier(0.55, 0, 0.3, 1) 2s;
+      /* Starts after the side curtains, finishes at the same moment (2s + 3s = 5s) */
+      transition: transform 3s cubic-bezier(0.55, 0, 0.3, 1) 2s;
     }
     .valance::after {
       content: '';
@@ -94,7 +108,7 @@
           #6e1010 98px,
           #4d0a0a 120px);
       box-shadow: inset 0 0 120px rgba(0,0,0,0.7);
-      transition: transform 4.75s cubic-bezier(0.7, 0, 0.25, 1);
+      transition: transform 5s cubic-bezier(0.7, 0, 0.25, 1);
       will-change: transform;
     }
     .curtain::before {
@@ -117,211 +131,129 @@
       inset: 0;
       z-index: 3;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: clamp(1.5rem, 6vw, 3.5rem);
       padding: 20px;
-      transition: opacity 0.9s ease;
+      transition: opacity 0.5s ease;
     }
     .start-screen.gone {
       opacity: 0;
       pointer-events: none;
     }
 
-    /* ---------- Arcade button + mounting ---------- */
-    .button-rig {
-      position: relative;
-      width: clamp(170px, 42vw, 280px);
-      height: clamp(170px, 42vw, 280px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    /* The mounting plate the button is bolted to */
-    .mount {
-      position: absolute;
-      width: 86%;
-      height: 86%;
-      border-radius: 26%;
-      background:
-        radial-gradient(circle at 50% 40%, #2c2c30 0%, #161618 70%, #0c0c0d 100%);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.6), inset 0 3px 8px rgba(255,255,255,0.08);
-      transition: opacity 0.6s ease;
-    }
-    .mount::before {
-      /* dark socket where the button sits */
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 76%; height: 76%;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(circle, #000 40%, #1a1a1c 100%);
-      box-shadow: inset 0 6px 14px rgba(0,0,0,0.9);
-    }
-    .bolt {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #9a9aa2, #3a3a40 70%, #1c1c20);
-      box-shadow: inset 0 1px 1px rgba(255,255,255,0.4);
-    }
-    .bolt.tl { top: 9%;  left: 9%; }
-    .bolt.tr { top: 9%;  right: 9%; }
-    .bolt.bl { bottom: 9%; left: 9%; }
-    .bolt.br { bottom: 9%; right: 9%; }
-
+    /* ---------- Arcade button ---------- */
     .arcade-btn {
       position: relative;
-      width: 78%;
-      height: 78%;
+      width: clamp(150px, 38vw, 240px);
+      height: clamp(150px, 38vw, 240px);
       border: none;
       border-radius: 50%;
       cursor: pointer;
       outline: none;
+      /* Metallic bezel / housing ring */
       background:
-        radial-gradient(circle at 50% 30%,
-          #ff8a8a 0%, #f53b3b 42%, #d11d1d 70%, #9c1313 100%);
+        radial-gradient(circle at 50% 32%, #6f6f75 0%, #45454a 52%, #232327 100%);
       box-shadow:
-        0 20px 0 #6e0d0d,
-        0 20px 0 3px #560a0a,
-        inset 0 -10px 22px rgba(0,0,0,0.4),
-        inset 0 14px 28px rgba(255,255,255,0.4);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.2s ease;
+        0 12px 26px rgba(0,0,0,0.55),
+        inset 0 2px 3px rgba(255,255,255,0.28),
+        inset 0 -5px 10px rgba(0,0,0,0.65);
+      transition: filter 0.2s ease;
     }
-    .arcade-btn .label {
+    /* The convex, glossy button cap seated inside the bezel */
+    .arcade-btn::before {
+      content: '';
       position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      color: rgba(255,255,255,0.92);
-      font-weight: 800;
-      font-size: clamp(1.1rem, 3.4vw, 1.9rem);
-      letter-spacing: 0.18em;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-      pointer-events: none;
-      user-select: none;
-    }
-    .arcade-btn:hover { filter: brightness(1.08); }
-    .arcade-btn.pressed {
-      transform: translateY(20px);
+      inset: clamp(15px, 4vw, 24px);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 28%, #ff8f8f 0%, #f53b3b 40%, #cf1d1d 72%, #9c1313 100%);
       box-shadow:
-        0 2px 0 #6e0d0d,
-        0 2px 0 3px #560a0a,
-        inset 0 -5px 16px rgba(0,0,0,0.45),
-        inset 0 10px 24px rgba(255,255,255,0.25);
+        inset 0 12px 22px rgba(255,255,255,0.45),
+        inset 0 -14px 24px rgba(0,0,0,0.45),
+        0 7px 0 #7c1010;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
-    /* Button breaks loose from its mounting and falls out of frame */
-    .arcade-btn.falling {
+    .arcade-btn:hover { filter: brightness(1.07); }
+    .arcade-btn:active::before {
+      transform: translateY(6px);
       box-shadow:
-        0 20px 0 #6e0d0d,
-        0 20px 0 3px #560a0a;
-      animation: breakLoose 0.95s cubic-bezier(0.45, 0.05, 0.95, 0.9) forwards;
-    }
-    @keyframes breakLoose {
-      0%   { transform: translateY(20px) rotate(0deg); }
-      12%  { transform: translateY(4px) rotate(-4deg); }
-      100% { transform: translateY(140vh) rotate(32deg); }
+        inset 0 10px 20px rgba(255,255,255,0.3),
+        inset 0 -10px 20px rgba(0,0,0,0.5),
+        0 1px 0 #7c1010;
     }
   </style>
 </head>
 <body>
-  <!-- Video sits behind the curtains and is already playing when revealed -->
+  <!-- Video sits behind the curtains and is revealed already playing -->
   <div class="video-container" id="videoContainer">
     <div id="player"></div>
     <div class="block-overlay" id="blockOverlay"></div>
   </div>
 
-  <!-- Closed theater curtains -->
+  <!-- Theater curtains: fade in first, then part -->
   <div class="curtains" id="curtains">
     <div class="valance"></div>
     <div class="curtain curtain-left"></div>
     <div class="curtain curtain-right"></div>
   </div>
 
-  <!-- The enticement: giant red arcade button -->
+  <!-- The enticement: an unlabeled arcade button -->
   <div class="start-screen" id="startScreen">
-    <div class="button-rig">
-      <div class="mount" id="mount">
-        <span class="bolt tl"></span>
-        <span class="bolt tr"></span>
-        <span class="bolt bl"></span>
-        <span class="bolt br"></span>
-      </div>
-      <button class="arcade-btn" id="goBtn" aria-label="Claim prize">
-        <span class="label">PUSH</span>
-      </button>
-    </div>
+    <button class="arcade-btn" id="goBtn" aria-label="Start"></button>
   </div>
 
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     var player;
-    var clicked = false, videoPlaying = false, buttonDropped = false, opened = false, openScheduled = false;
+    var clicked = false;
+
+    // Timing (ms)
+    var CURTAIN_FADE = 800;   // curtains fade fully in
+    var PLAY_DELAY   = 500;   // after curtains in, before video plays
+    var OPEN_DELAY   = 750;   // after video plays, before curtains part
 
     function onYouTubeIframeAPIReady() { /* API ready; player created on click */ }
-
-    function openCurtains() {
-      if (opened) return;
-      opened = true;
-      document.getElementById('curtains').classList.add('open');
-      document.getElementById('startScreen').classList.add('gone');
-      document.getElementById('blockOverlay').classList.add('active');
-    }
-
-    function maybeOpen() {
-      if (openScheduled) return;
-      if (buttonDropped && videoPlaying) {
-        openScheduled = true;
-        // Begin opening 0.25s after the video starts; CSS carries it to fully open at the 5s mark.
-        setTimeout(openCurtains, 250);
-      }
-    }
 
     document.getElementById('goBtn').addEventListener('click', function () {
       if (clicked) return;
       clicked = true;
 
-      var btn = this;
-      btn.classList.add('pressed');
+      // Button simply fades out.
+      document.getElementById('startScreen').classList.add('gone');
 
-      // After it depresses, the button breaks loose and falls away.
-      setTimeout(function () {
-        btn.classList.remove('pressed');
-        btn.classList.add('falling');
-        document.getElementById('mount').style.opacity = '0';
-      }, 240);
+      // Curtains fade in over the grayscale backdrop.
+      document.getElementById('curtains').classList.add('visible');
 
-      // Build the player immediately so it's playing behind the curtains.
+      // Start loading the video in the background (created within the user gesture).
       player = new YT.Player('player', {
         height: '100%',
         width: '100%',
         videoId: 'dQw4w9WgXcQ',
         playerVars: {
-          'autoplay': 1,
+          'autoplay': 0,
           'controls': 1,
           'rel': 0,
           'modestbranding': 1,
           'fs': 1,
           'playsinline': 1
-        },
-        events: {
-          'onReady': function (e) { e.target.playVideo(); },
-          'onStateChange': function (e) {
-            if (e.data === YT.PlayerState.PLAYING) {
-              videoPlaying = true;
-              maybeOpen();
-            }
-          }
         }
       });
 
-      // Mark the button as dropped once it has cleared the frame.
-      setTimeout(function () { buttonDropped = true; maybeOpen(); }, 1150);
+      // Once curtains are fully faded in, place the (still hidden) video behind them.
+      setTimeout(function () {
+        document.getElementById('videoContainer').classList.add('visible');
+      }, CURTAIN_FADE);
 
-      // Fallback: open the curtains even if the PLAYING event is delayed.
-      setTimeout(function () { openCurtains(); }, 3500);
+      // 0.5s after the curtains are fully faded in, start the video playing.
+      setTimeout(function () {
+        if (player && player.playVideo) player.playVideo();
+      }, CURTAIN_FADE + PLAY_DELAY);
+
+      // 0.75s after the video starts, part the curtains over 5 seconds.
+      setTimeout(function () {
+        document.getElementById('curtains').classList.add('open');
+        document.getElementById('blockOverlay').classList.add('active');
+      }, CURTAIN_FADE + PLAY_DELAY + OPEN_DELAY);
     });
   </script>
 </body>

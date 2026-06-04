@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Push the button</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👇</text></svg>">
+  <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👇</text></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * {
@@ -16,13 +16,14 @@
       height: 100%;
       overflow: hidden;
     }
-    /* Soothing dark-mode grayscale backdrop with a slow, gentle drift */
+    /* Subtle, slowly drifting rainbow backdrop */
     body {
-      background: linear-gradient(135deg, #1d1d1f 0%, #2c2c2f 25%, #3a3a3d 50%, #2c2c2f 75%, #1a1a1c 100%);
-      background-size: 300% 300%;
-      animation: drift 22s ease-in-out infinite;
+      background: linear-gradient(120deg,
+        #3a1d4d, #1d2e4d, #1d4d3e, #3a4d1d, #4d3a1d, #4d1d34, #3a1d4d);
+      background-size: 400% 400%;
+      animation: rainbow 30s ease-in-out infinite;
     }
-    @keyframes drift {
+    @keyframes rainbow {
       0%, 100% { background-position: 0% 50%; }
       50%      { background-position: 100% 50%; }
     }
@@ -248,6 +249,14 @@
 
       // Button simply fades out.
       document.getElementById('startScreen').classList.add('gone');
+
+      // Once the button has faded out, switch the tab title and favicon.
+      setTimeout(function () {
+        document.title = 'Enjoy!';
+        var svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>" +
+                  "<text y='.9em' font-size='90'>📽️</text></svg>";
+        document.getElementById('favicon').href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+      }, 500);
 
       // Curtains fade in over the grayscale backdrop.
       document.getElementById('curtains').classList.add('visible');
